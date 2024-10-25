@@ -15,6 +15,7 @@ from histogram2 import Histogram2
 from PyQt5 import QtCore, QtGui, QtWidgets
 from menuSegmentasi import MenuSegmentasi as ms
 from aritmatika_panel import Ui_AritmatikaOperation
+from ekstraksifitur import extraction_feature as ef
 
 
 
@@ -85,6 +86,7 @@ class Ui_MainWindow(object):
 
         self.menuReset = QtWidgets.QMenu(self.menubar)
         self.menuReset.setObjectName("menuReset")
+        self.menuReset.aboutToShow.connect(self.clear_scene)
         self.menuGeometri = QtWidgets.QMenu(self.menubar)
         self.menuGeometri.setObjectName("menuGeometri")
         self.menuFlipping = QtWidgets.QMenu(self.menuGeometri)
@@ -258,12 +260,12 @@ class Ui_MainWindow(object):
         self.actionlinearBrightness = QtWidgets.QAction(MainWindow)
         self.actionlinearBrightness.setObjectName("actionlinearBrightness")
         self.actionlinearBrightness.triggered.connect(self.show_brightness_slider)
-        self.actionScaling_Uniform = QtWidgets.QAction(MainWindow)
-        self.actionScaling_Uniform.setObjectName("actionScaling_Uniform")
-        self.actionScaling_Uniform.triggered.connect(self.scalingUniform)
-        self.actionScaling_Non_Uniform = QtWidgets.QAction(MainWindow)
-        self.actionScaling_Non_Uniform.setObjectName("actionScaling_Non_Uniform")
-        self.actionScaling_Non_Uniform.triggered.connect(self.scalingNonUniform)
+        # self.actionScaling_Uniform = QtWidgets.QAction(MainWindow)
+        # self.actionScaling_Uniform.setObjectName("actionScaling_Uniform")
+        # self.actionScaling_Uniform.triggered.connect(self.scalingUniform)
+        # self.actionScaling_Non_Uniform = QtWidgets.QAction(MainWindow)
+        # self.actionScaling_Non_Uniform.setObjectName("actionScaling_Non_Uniform")
+        # self.actionScaling_Non_Uniform.triggered.connect(self.scalingNonUniform)
         self.actionCropping = QtWidgets.QAction(MainWindow)
         self.actionCropping.setObjectName("actionCropping")
         self.actionCropping.triggered.connect(self.show_crop_dialog)
@@ -317,10 +319,17 @@ class Ui_MainWindow(object):
         self.actionSkeleton = QtWidgets.QAction(MainWindow)
         self.actionSkeleton.setObjectName("actionSkeleton")
         self.actionSkeleton.triggered.connect(self.skeleton)
-        self.actionPruning = QtWidgets.QAction(MainWindow)
-        self.actionPruning.setObjectName("actionPruning")
-        self.actionPruning.triggered.connect(lambda: self.prune_skeleton(2))
-
+        # self.actionPruning = QtWidgets.QAction(MainWindow)
+        # self.actionPruning.setObjectName("actionPruning")
+        # self.actionPruning.triggered.connect(lambda: self.prune_skeleton(2))
+        self.menuExtraction = QtWidgets.QMenu(self.menubar)
+        self.menuExtraction.setObjectName("menuExtraction")
+        self.actionEkstraksiWarna = QtWidgets.QAction(MainWindow)
+        self.actionEkstraksiWarna.setObjectName("actionEkstraksiWarna")
+        self.actionEkstraksiWarna.triggered.connect(self.color_extraction)
+        self.actionEkstraksiTexture = QtWidgets.QAction(MainWindow)
+        self.actionEkstraksiTexture.setObjectName("actionEkstraksiTexture")
+        self.actionEkstraksiTexture.triggered.connect(self.texture_extraction)
         self.menuHologram.addAction(self.actionInput)
         self.menuHologram.addSeparator()
         self.menuHologram.addAction(self.actionOutput)
@@ -395,12 +404,12 @@ class Ui_MainWindow(object):
         self.menuMarfologi.addAction(self.actionTinning)
         self.menuMarfologi.addAction(self.actionThickening)
         self.menuMarfologi.addAction(self.actionSkeleton)
-        self.menuMarfologi.addAction(self.actionPruning)
+        # self.menuMarfologi.addAction(self.actionPruning)
         self.menuFlipping.addAction(self.actionFlipping_Horizontal)
         self.menuFlipping.addAction(self.actionFlipping_Vertical)
         self.menuGeometri.addAction(self.menuFlipping.menuAction())
-        self.menuGeometri.addAction(self.actionScaling_Uniform)
-        self.menuGeometri.addAction(self.actionScaling_Non_Uniform)
+        # self.menuGeometri.addAction(self.actionScaling_Uniform)
+        # self.menuGeometri.addAction(self.actionScaling_Non_Uniform)
         self.menuGeometri.addAction(self.actionCropping)
         self.menuGeometri.addAction(self.actionTranslasi)
         self.menuGeometri.addAction(self.actionRotasi)
@@ -420,6 +429,9 @@ class Ui_MainWindow(object):
         self.menuSegmentasi.addAction(self.actionGlobal_Thresholding)
         self.menuSegmentasi.addAction(self.actionAdaptive_Thresh_Mean)
         self.menuSegmentasi.addAction(self.actionAdaptive_Thresh_Gaussian)
+        self.menubar.addAction(self.menuExtraction.menuAction())
+        self.menuExtraction.addAction(self.actionEkstraksiWarna)
+        self.menuExtraction.addAction(self.actionEkstraksiTexture)
         self.menubar.addAction(self.menuTentang.menuAction())
         self.menubar.addAction(self.menuReset.menuAction())
 
@@ -510,11 +522,11 @@ class Ui_MainWindow(object):
         self.actionTinning.setText(_translate("MainWindow", "Thinning"))
         self.actionThickening.setText(_translate("MainWindow", "Thickening"))
         self.actionSkeleton.setText(_translate("MainWindow", "Skeleton"))
-        self.actionPruning.setText(_translate("MainWindow", "Prunning"))
+        # self.actionPruning.setText(_translate("MainWindow", "Prunning"))
         self.actionSturatioin.setText(_translate("MainWindow", "Saturatioin"))
         self.actionlinearBrightness.setText(_translate("MainWindow", "Linear Brightness"))
-        self.actionScaling_Uniform.setText(_translate("MainWindow", "Scaling Uniform"))
-        self.actionScaling_Non_Uniform.setText(_translate("MainWindow", "Scaling Non Uniform"))
+        # self.actionScaling_Uniform.setText(_translate("MainWindow", "Scaling Uniform"))
+        # self.actionScaling_Non_Uniform.setText(_translate("MainWindow", "Scaling Non Uniform"))
         self.actionCropping.setText(_translate("MainWindow", "Cropping"))
         self.actionTranslasi.setText(_translate("MainWindow", "Translasi"))
         self.actionRotasi.setText(_translate("MainWindow", "Rotasi"))
@@ -527,6 +539,10 @@ class Ui_MainWindow(object):
         self.actionGlobal_Thresholding.setText(_translate("Main Window", "Global Thresholding"))
         self.actionAdaptive_Thresh_Mean.setText(_translate("Main Window", "Adaptive Thresh Mean"))
         self.actionAdaptive_Thresh_Gaussian.setText(_translate("Main Window", "Adaptive Thresh Gaussian"))
+        self.menuExtraction.setTitle(_translate("MainWindow", "Ekstraksi Fitur"))
+        self.actionEkstraksiWarna.setText(_translate("MainWindow", "Ekstraksi Warna"))
+        self.actionEkstraksiTexture.setText(_translate("MainWindow", "Ekstraksi Texture"))
+        
     def __init__(self):
         self.imagePath = None
         self.image_pixmap = None  
@@ -2375,6 +2391,16 @@ class Ui_MainWindow(object):
         
         # delete temp file
         os.remove(temp_file_path)
+
+    def color_extraction(self):
+        result = ef.ekstraksi_warna(self.imagePath)
+
+        print(result)
+
+    def texture_extraction(self):
+        result = ef.ekstraksi_texture(self.imagePath)
+
+        print(result)
 
 if __name__ == "__main__":
     import sys
