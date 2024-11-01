@@ -16,6 +16,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from menuSegmentasi import MenuSegmentasi as ms
 from aritmatika_panel import Ui_AritmatikaOperation
 from ekstraksifitur import extraction_feature as ef
+import ekstraksifitur as ef
 
 
 
@@ -326,7 +327,7 @@ class Ui_MainWindow(object):
         self.menuExtraction.setObjectName("menuExtraction")
         self.actionEkstraksiWarna = QtWidgets.QAction(MainWindow)
         self.actionEkstraksiWarna.setObjectName("actionEkstraksiWarna")
-        self.actionEkstraksiWarna.triggered.connect(self.color_extraction)
+        self.actionEkstraksiWarna.triggered.connect(self.ekstraksi_gabungan)
         self.actionEkstraksiTexture = QtWidgets.QAction(MainWindow)
         self.actionEkstraksiTexture.setObjectName("actionEkstraksiTexture")
         self.actionEkstraksiTexture.triggered.connect(self.texture_extraction)
@@ -2400,6 +2401,10 @@ class Ui_MainWindow(object):
     def texture_extraction(self):
         result = ef.ekstraksi_texture(self.imagePath)
 
+        print(result)
+
+    def ekstraksi_gabungan(self):
+        result = ef.extraction_feature.ekstraksi_gabungan(self.imagePath)
         print(result)
 
 if __name__ == "__main__":
